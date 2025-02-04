@@ -550,24 +550,27 @@ cl::Context ocl_hardware_context::get_cl_context() const {
 }
 
 void ocl_hardware_context::init_allocator(ocl_hardware_manager *mgr) {
-  _usm_provider = ocl_usm::from_intel_extension(mgr, _dev_id);
-  if(!_usm_provider->is_available()) {
-    // Try SVM fine-grained system as an alternative
-    _usm_provider = ocl_usm::from_fine_grained_system_svm(mgr, _dev_id);
-    if(_usm_provider->is_available()) {
-      HIPSYCL_DEBUG_WARNING << "OpenCL device " << get_device_name()
-                            << " does not support Intel USM extensions; "
-                               "falling back to fine-grained system SVM. USM "
-                               "pointer info queries have limited support."
-                            << std::endl;
-    }
-  }
-  if(!_usm_provider->is_available()) {
-    HIPSYCL_DEBUG_WARNING << "OpenCL device " << get_device_name()
-                          << " does not have a valid USM provider. Memory "
-                             "allocations are not possible on that device."
+  // _usm_provider = ocl_usm::from_intel_extension(mgr, _dev_id);
+  // if(!_usm_provider->is_available()) {
+  //   // Try SVM fine-grained system as an alternative
+  //   _usm_provider = ocl_usm::from_fine_grained_system_svm(mgr, _dev_id);
+  //   if(_usm_provider->is_available()) {
+  //     HIPSYCL_DEBUG_WARNING << "OpenCL device " << get_device_name()
+  //                           << " does not support Intel USM extensions; "
+  //                              "falling back to fine-grained system SVM. USM "
+  //                              "pointer info queries have limited support."
+  //                           << std::endl;
+  //   }
+  // }
+  // if(!_usm_provider->is_available()) {
+  //   HIPSYCL_DEBUG_WARNING << "OpenCL device " << get_device_name()
+  //                         << " does not have a valid USM provider. Memory "
+  //                            "allocations are not possible on that device."
+  //                         << std::endl;
+  // }
+  _usm_provider = ocl_usm::from_coarse_grained_svm(mgr,_dev_id);
+  HIPSYCL_DEBUG_WARNING << "Forcing Coarse-Grained SVM on device " << get_device_name()
                           << std::endl;
-  }
   device_id dev{
       backend_descriptor{hardware_platform::ocl, api_platform::ocl},
       _dev_id};

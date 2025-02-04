@@ -38,3 +38,4 @@ endif()
 include_directories(${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR})
 
 subdirs(bruteforce_nbody)
+subdirs(buffer)

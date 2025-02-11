@@ -562,29 +562,28 @@ public:
 
 
   virtual cl_int get_alloc_info(const void* ptr, pointer_info& out) override {
-    //TODO: not important for now. Also probably not viable for coarse-grained
-    return CL_SUCCESS;
-    // if(!_is_available) {
-    //   return CL_INVALID_PLATFORM;
-    // }
-
-    // // TODO: We don't have a direct way of querying where a SVM pointer
-    // // comes from, so for now we just assume everything is a SVM pointer from
-    // // this device with shared USM semantics. This might not be correct
-    // // if other devices are used too.
-    // out.is_from_host_backend = false;
-    // out.is_usm = true;
-    // out.is_optimized_host = false;
-    // out.dev = _hw_mgr->get_device_id(_device_index);
-
     // return CL_SUCCESS;
+    if(!_is_available) {
+      return CL_INVALID_PLATFORM;
+    }
+
+    // TODO: We don't have a direct way of querying where a SVM pointer
+    // comes from, so for now we just assume everything is a SVM pointer from
+    // this device with shared USM semantics. This might not be correct
+    // if other devices are used too.
+    out.is_from_host_backend = false;
+    out.is_usm = true;
+    out.is_optimized_host = false;
+    out.dev = _hw_mgr->get_device_id(_device_index);
+
+    return CL_SUCCESS;
   }
 
   virtual cl_int enqueue_memcpy(cl::CommandQueue &queue, void *dst,
                                 const void *src, std::size_t size,
                                 const std::vector<cl::Event> &wait_events,
                                 cl::Event *evt_out) override {
-    return queue.enqueueMemcpySVM(dst, src, false, size, &wait_events, evt_out);
+    return queue.enqueueMemcpySVM(dst, src, true, size, &wait_events, evt_out); //TODO: made call blocking, change back
   }
 
 

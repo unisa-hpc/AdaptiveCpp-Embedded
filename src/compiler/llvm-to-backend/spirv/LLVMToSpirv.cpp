@@ -224,7 +224,7 @@ bool LLVMToSpirvTranslator::translateToBackendFormat(llvm::Module &FlavoredModul
   auto OutputFile = llvm::sys::fs::TempFile::create("acpp-sscp-spirv-%%%%%%.spv");
   
   std::string OutputFilename = OutputFile->TmpName;
-  
+
   auto E = InputFile.takeError();
   if(E){
     this->registerError("LLVMToSpirv: Could not create temp file: "+InputFile->TmpName);
@@ -250,7 +250,7 @@ bool LLVMToSpirvTranslator::translateToBackendFormat(llvm::Module &FlavoredModul
   if(UseIntelLLVMSpirvArgs)
     appendIntelLLVMSpirvOptions(Args);
   else {
-    Args.push_back("-spirv-max-version=1.3");
+    Args.push_back("-spirv-max-version=1.0"); //TODO: FIXME 1.3
     Args.push_back("-spirv-ext=+SPV_EXT_relaxed_printf_string_address_space");
   }
 
